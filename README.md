@@ -1,2 +1,2 @@
-# entomo_keys
-identifications keys for some vector insects.
+# entomo_tools
+Applications and scripts for vectorial entomology
