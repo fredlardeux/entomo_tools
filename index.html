@@ -207,10 +207,15 @@ main {
 
 <!-- CARD 1 -->
 <div class="tool">
+    
 <img src="images/logo_moustic_reunion.png">
 
 <div>
 <h2>Moustic Réunion</h2>
+    data-lang="fr"
+     data-platform="aandroid"
+     data-taxa="moustiques"
+     data-category="identification">  
 
 <span class="badge">Android</span>
 <span class="badge">FR</span>
@@ -233,7 +238,10 @@ main {
 
 <div>
 <h2>Moustic Tahiti</h2>
-
+   data-lang="fr"
+     data-platform="aandroid"
+     data-taxa="moustiques"
+     data-category="identification">
 <span class="badge">Android</span>
 <span class="badge">FR</span>
 <span class="badge">Disponible bientôt</span>
@@ -255,7 +263,10 @@ main {
 
 <div>
 <h2>Moustic Tahiti <span>(en)</span></h2>
-
+       data-lang="en"
+        data-platform="android"
+         data-taxa="moustiques"
+         data-category="identification">
 <span class="badge">Android</span>
 <span class="badge">EN</span>
 <span class="badge">Available soon</span>
@@ -349,3 +360,31 @@ window.onclick = function(e) {
 
 </body>
 </html>
+
+/* FILTER SIMPLE (texte + metadata) */
+document.getElementById("search").addEventListener("keyup", function() {
+
+    const filter = this.value.toLowerCase();
+    const tools = document.querySelectorAll(".tool");
+
+    tools.forEach(tool => {
+
+        // texte visible
+        const text = tool.innerText.toLowerCase();
+
+        // metadata
+        const lang = tool.dataset.lang || "";
+        const platform = tool.dataset.platform || "";
+        const taxa = tool.dataset.taxa || "";
+        const category = tool.dataset.category || "";
+
+        const meta = (lang + " " + platform + " " + taxa + " " + category).toLowerCase();
+
+        if (text.includes(filter) || meta.includes(filter)) {
+            tool.style.display = "flex";  // IMPORTANT (car tes cartes sont en flex)
+        } else {
+            tool.style.display = "none";
+        }
+
+    });
+});
