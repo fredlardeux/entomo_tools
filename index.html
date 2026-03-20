@@ -34,7 +34,6 @@ body.site {
     flex-direction: column;
 }
 
-/* HEADER */
 header {
     background: linear-gradient(135deg, #2c3e50, #2c7be5);
     color: white;
@@ -53,12 +52,11 @@ input {
     width: 220px;
 }
 
-/* CHIPS */
 #activeFilters {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin: 10px 0 5px 0;
+    margin: 10px 0;
     justify-content: center;
 }
 
@@ -68,10 +66,8 @@ input {
     padding: 5px 10px;
     border-radius: 20px;
     font-size: 0.8em;
-    cursor: pointer;
 }
 
-/* MAIN */
 main {
     flex: 1;
     padding: 40px 20px;
@@ -80,7 +76,6 @@ main {
     align-items: center;
 }
 
-/* CARD */
 .tool {
     display: flex;
     gap: 18px;
@@ -115,9 +110,6 @@ main {
     margin-right: 6px;
 }
 
-.badge.status-ok { background: #d4edda; color: #155724; }
-.badge.status-soon { background: #fff3cd; color: #856404; }
-
 .button-group {
     display: flex;
     gap: 10px;
@@ -143,7 +135,7 @@ main {
     color: white;
 }
 
-/* FILTER PANEL (AMÉLIORÉ) */
+/* FILTER PANEL */
 .filter-panel {
     position: fixed;
     top: 0;
@@ -155,40 +147,9 @@ main {
     transition: 0.3s ease;
     z-index: 2000;
     padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
 }
 
 .filter-panel.open { right: 0; }
-
-.filter-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: bold;
-}
-
-.filters {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.filters select {
-    padding: 8px;
-    border-radius: 8px;
-    border: none;
-}
-
-.filters button {
-    padding: 8px;
-    border-radius: 8px;
-    border: none;
-    background: #2c7be5;
-    color: white;
-    cursor: pointer;
-}
 
 /* MODAL */
 #overlay {
@@ -209,6 +170,7 @@ main {
     padding:20px;
     border-radius:10px;
     z-index:3001;
+    max-width:600px;
 }
 
 /* FOOTER */
@@ -224,6 +186,11 @@ footer img {
     vertical-align: middle;
     margin-right: 10px;
 }
+
+footer a {
+    color: white;
+    text-decoration: none;
+}
 </style>
 </head>
 
@@ -234,113 +201,79 @@ footer img {
 
 <div class="controls">
 <input id="search" placeholder="Filtrer...">
-<button id="modeBtn">🌙 Dark mode</button>
+<button onclick="toggleDark()">🌙 Dark mode</button>
 <button id="openFilters">⚙️ Filters</button>
 </div>
 
 <div id="activeFilters"></div>
-<div id="resultCount"></div>
 </header>
 
 <main>
 
-<!-- CARD 1 -->
+<!-- CARD -->
 <div class="tool" data-lang="fr" data-platform="android" data-taxa="moustiques" data-category="identification">
 <img src="images/logo_moustic_reunion.png">
+
 <div>
 <h2>Moustic Réunion</h2>
-<div>
-<span class="badge">Android</span>
-<span class="badge">FR</span>
-<span class="badge status-ok">Disponible</span>
-</div>
-<p>Clé dichotomique interactive des moustiques de La Réunion.</p>
-<div class="button-group">
-<a class="download-btn" href="files/moustic_reunion.apk">⬇ APK</a>
-<button class="install-btn" onclick="openModal('moustic_reunion')">Installation</button>
-</div>
-</div>
-</div>
 
-<!-- CARD 2 -->
-<div class="tool" data-lang="en" data-platform="android" data-taxa="moustiques" data-category="identification">
-<img src="images/logo_moustic_tahiti.png">
-<div>
-<h2>Moustic Tahiti (EN)</h2>
-<div>
-<span class="badge">Android</span>
-<span class="badge">EN</span>
-<span class="badge status-soon">Soon</span>
-</div>
-<p>Interactive mosquito key for Tahiti.</p>
 <div class="button-group">
 <a class="download-btn" href="#">APK</a>
-<button class="install-btn" onclick="openModal('moustic_tahiti')">Installation</button>
-</div>
-</div>
+<button class="install-btn" onclick="openModal('moustic_reunion')">Installation</button>
 </div>
 
-<!-- CARD 3 -->
-<div class="tool" data-lang="fr" data-platform="web" data-taxa="moustiques" data-category="identification">
-<img src="images/logo_moustic_tahiti.png">
-<div>
-<h2>Moustic Web Tool</h2>
-<div>
-<span class="badge">Web</span>
-<span class="badge">FR</span>
-<span class="badge status-ok">Disponible</span>
-</div>
-<p>Version web interactive.</p>
 </div>
 </div>
 
 </main>
 
-<!-- FILTER PANEL -->
-<div id="filterPanel" class="filter-panel">
-<div class="filter-header">
-<h3>Filters</h3>
-<button id="closeFilters">✖</button>
-</div>
-
-<div class="filters">
-<select id="filter-lang"><option value="">Langue</option><option value="fr">FR</option><option value="en">EN</option></select>
-<select id="filter-platform"><option value="">Plateforme</option><option value="android">Android</option><option value="web">Web</option></select>
-<select id="filter-taxa"><option value="">Taxa</option><option value="moustiques">Moustiques</option></select>
-<select id="filter-category"><option value="">Catégorie</option><option value="identification">Identification</option></select>
-<button id="resetFilters">Reset</button>
-</div>
-</div>
-
 <!-- MODAL -->
-<div id="overlay"></div>
+<div id="overlay" onclick="closeModal()"></div>
 <div id="modal"></div>
 
 <script>
 
-/* DARK MODE FIX */
-document.getElementById("modeBtn").onclick = () => {
+/* DARK MODE */
+function toggleDark(){
 document.body.classList.toggle("dark");
-document.getElementById("modeBtn").innerText =
-document.body.classList.contains("dark") ? "☀ Light mode" : "🌙 Dark mode";
-};
+}
 
-/* INSTALL FIX (NO 404) */
+/* =========================
+   JSON INSTALL RENDERER
+========================= */
+
 function openModal(id){
+
 const modal = document.getElementById("modal");
 const overlay = document.getElementById("overlay");
 
-modal.style.display="block";
-overlay.style.display="block";
+modal.style.display = "block";
+overlay.style.display = "block";
 
+fetch("tutoriels/" + id + ".json")
+.then(r => r.json())
+.then(data => {
+
+let html = `<h2>${data.title}</h2><ol>`;
+
+if(data.steps){
+data.steps.forEach(step => {
+html += `<li>${step}</li>`;
+});
+}
+
+html += `</ol><button onclick="closeModal()">Fermer</button>`;
+
+modal.innerHTML = html;
+})
+.catch(err => {
 modal.innerHTML = `
-<h3>Installation</h3>
-<p>${id}</p>
-<p>Chargement du tutoriel...</p>
-<iframe src="tutoriels/${id}.html"
-style="width:500px;height:350px;border:none;"></iframe>
+<h3>Erreur</h3>
+<p>Fichier introuvable : ${id}.json</p>
 <button onclick="closeModal()">Fermer</button>
 `;
+});
+
 }
 
 function closeModal(){
@@ -348,60 +281,13 @@ document.getElementById("modal").style.display="none";
 document.getElementById("overlay").style.display="none";
 }
 
-/* FILTER */
-function applyFilters(){
-const search=document.getElementById("search").value.toLowerCase();
-const lang=document.getElementById("filter-lang").value;
-const platform=document.getElementById("filter-platform").value;
-const taxa=document.getElementById("filter-taxa").value;
-const cat=document.getElementById("filter-category").value;
-
-let count=0;
-
-document.querySelectorAll(".tool").forEach(t=>{
-let text=t.innerText.toLowerCase();
-let ok=true;
-
-if(search&&!text.includes(search))ok=false;
-if(lang&&t.dataset.lang!==lang)ok=false;
-if(platform&&t.dataset.platform!==platform)ok=false;
-if(taxa&&t.dataset.taxa!==taxa)ok=false;
-if(cat&&t.dataset.category!==cat)ok=false;
-
-t.style.display=ok?"flex":"none";
-if(ok)count++;
-});
-
-document.getElementById("resultCount").innerText=count+" outil(s)";
-}
-
-/* EVENTS SAFE INIT */
-window.addEventListener("DOMContentLoaded",()=>{
-
-document.getElementById("search").addEventListener("input",applyFilters);
-document.querySelectorAll("select").forEach(s=>s.addEventListener("change",applyFilters));
-
-document.getElementById("resetFilters").onclick=()=>{
-document.querySelectorAll("select").forEach(s=>s.value="");
-document.getElementById("search").value="";
-applyFilters();
-};
-
-applyFilters();
-});
-
-/* FILTER PANEL */
-const panel=document.getElementById("filterPanel");
-
-document.getElementById("openFilters").onclick=()=>panel.classList.add("open");
-document.getElementById("closeFilters").onclick=()=>panel.classList.remove("open");
-document.getElementById("overlay").onclick=closeModal;
-
 </script>
 
 <footer>
 <img src="images/Logo-github_entomotools.png">
-<a href="https://github.com/" target="_blank">GitHub repository</a>
+<a href="https://github.com/" target="_blank">
+GitHub repository
+</a>
 <p>© 2026 - FLX - Epidemiological entomology</p>
 </footer>
 
