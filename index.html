@@ -28,7 +28,6 @@ body {
     color: var(--text);
 }
 
-/* sticky layout */
 body.site {
     min-height: 100vh;
     display: flex;
@@ -45,6 +44,10 @@ header {
 
 .controls {
     margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
 }
 
 input {
@@ -61,7 +64,29 @@ input {
     cursor: pointer;
 }
 
-/* MAIN = zone centrée + air */
+/* FILTER PANEL */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.filter-btn {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: #e0e0e0;
+}
+
+.filter-btn.active {
+    background: var(--accent);
+    color: white;
+}
+
+/* MAIN */
 main {
     flex: 1;
     padding: 40px 20px;
@@ -70,7 +95,7 @@ main {
     align-items: center;
 }
 
-/* CARTE = version aérée + centrée */
+/* CARDS (inchangé visuellement + amélioré précédent design) */
 .tool {
     display: flex;
     gap: 18px;
@@ -94,7 +119,6 @@ main {
     transform: translateY(-3px);
 }
 
-/* IMAGE */
 .tool img {
     width: 90px;
     height: 90px;
@@ -102,7 +126,6 @@ main {
     flex-shrink: 0;
 }
 
-/* TITRES & TEXTE */
 .tool h2 {
     margin: 0 0 6px 0;
 }
@@ -112,7 +135,6 @@ main {
     line-height: 1.4;
 }
 
-/* BADGES */
 .badge {
     background: var(--badge);
     padding: 4px 8px;
@@ -151,13 +173,6 @@ main {
     padding: 25px 10px;
     margin-top: auto;
     background: var(--card);
-    color: var(--text);
-    opacity: 0.8;
-}
-
-.footer-logo {
-    width: 55px;
-    margin-bottom: 8px;
 }
 
 /* MODAL */
@@ -166,28 +181,14 @@ main {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.6);
-    z-index: 1000;
 }
 
 .modal-content {
     background: var(--card);
-    color: var(--text);
     width: 320px;
     margin: 10% auto;
     padding: 20px;
     border-radius: 10px;
-    position: relative;
-}
-
-.close {
-    position: absolute;
-    right: 10px;
-    top: 5px;
-    cursor: pointer;
-}
-
-.step {
-    margin: 8px 0;
 }
 </style>
 </head>
@@ -198,15 +199,43 @@ main {
 <h1>Entomological Scientific Tools</h1>
 
 <div class="controls">
-<input id="search" placeholder="Filtrer...">
-<button class="toggle" id="modeBtn" onclick="toggleDark()">🌙 Mode sombre</button>
+
+<input id="search" placeholder="Recherche texte..." oninput="applyFilters()">
+
+<button class="toggle" onclick="toggleDark()" id="modeBtn">🌙 Mode sombre</button>
+
+<div class="filters">
+
+<button class="filter-btn" onclick="setFilter('lang','fr',this)">FR</button>
+<button class="filter-btn" onclick="setFilter('lang','en',this)">EN</button>
+<button class="filter-btn" onclick="setFilter('lang','es',this)">ES</button>
+
+<button class="filter-btn" onclick="setFilter('platform','apk',this)">APK</button>
+<button class="filter-btn" onclick="setFilter('platform','r',this)">R</button>
+<button class="filter-btn" onclick="setFilter('platform','python',this)">Python</button>
+
+<button class="filter-btn" onclick="setFilter('taxa','moustiques',this)">Moustiques</button>
+<button class="filter-btn" onclick="setFilter('taxa','triatomes',this)">Triatomes</button>
+
+<button class="filter-btn" onclick="setFilter('category','identification',this)">Identification</button>
+<button class="filter-btn" onclick="setFilter('category','statistics',this)">Statistics</button>
+
+<button class="filter-btn" onclick="resetFilters()">Reset</button>
+
+</div>
+
 </div>
 </header>
 
 <main>
 
-<!-- CARD 1 -->
-<div class="tool">
+<!-- TOOL 1 -->
+<div class="tool"
+     data-lang="fr"
+     data-platform="apk"
+     data-taxa="moustiques"
+     data-category="identification">
+
 <img src="images/logo_moustic_reunion.png">
 
 <div>
@@ -216,19 +245,23 @@ main {
 <span class="badge">FR</span>
 <span class="badge">Disponible</span>
 
-<p>Clé interactive dichotomique d'identification des moustiques de l'île de LA RÉUNION.</p>
+<p>Clé d'identification des moustiques de La Réunion.</p>
 
 <div class="button-group">
-<a class="download-btn" href="#">Télécharger APK</a>
-<button class="install-btn" onclick="openModal('moustic_reunion','fr')">
-📲 Installation
-</button>
+<a class="download-btn">Télécharger</a>
+<button class="install-btn">Installation</button>
 </div>
+
 </div>
 </div>
 
-<!-- CARD 2 -->
-<div class="tool">
+<!-- TOOL 2 -->
+<div class="tool"
+     data-lang="fr"
+     data-platform="apk"
+     data-taxa="moustiques"
+     data-category="identification">
+
 <img src="images/logo_moustic_tahiti.png">
 
 <div>
@@ -236,115 +269,84 @@ main {
 
 <span class="badge">Android</span>
 <span class="badge">FR</span>
-<span class="badge">Disponible bientôt</span>
 
-<p>Clé interactive dichotomique d'identification des moustiques de TAHITI.</p>
+<p>Clé des moustiques de Tahiti.</p>
 
-<div class="button-group">
-<a class="download-btn" href="#">Télécharger APK</a>
-<button class="install-btn" onclick="openModal('moustic_tahiti','fr')">
-📲 Installation
-</button>
-</div>
 </div>
 </div>
 
-<!-- CARD 3 -->
-<div class="tool">
+<!-- TOOL 3 -->
+<div class="tool"
+     data-lang="en"
+     data-platform="apk"
+     data-taxa="moustiques"
+     data-category="identification">
+
 <img src="images/logo_moustic_tahiti.png">
 
 <div>
-<h2>Moustic Tahiti <span>(en)</span></h2>
+<h2>Moustic Tahiti (EN)</h2>
 
 <span class="badge">Android</span>
 <span class="badge">EN</span>
-<span class="badge">Available soon</span>
 
-<p>Interactive dichotomous key for mosquito identification in TAHITI.</p>
+<p>Identification key for mosquitoes in Tahiti.</p>
 
-<div class="button-group">
-<a class="download-btn" href="#">Download APK</a>
-<button class="install-btn" onclick="openModal('moustic_tahiti','en')">
-📲 Installation
-</button>
-</div>
 </div>
 </div>
 
 </main>
 
 <footer class="site-footer">
-<img src="images/Logo-github_entomotools.png" class="footer-logo">
-<div>© 2026 - FLX - Epidemiological Entomology</div>
+© 2026 Epidemiological Entomology
 </footer>
 
-<!-- MODAL -->
-<div id="modal" class="modal">
-<div class="modal-content">
-<span class="close" onclick="closeModal()">✖</span>
-<div id="modal-text"></div>
-</div>
-</div>
-
 <script>
+
+let filters = {
+    lang: "",
+    platform: "",
+    taxa: "",
+    category: ""
+};
+
+function setFilter(type, value, btn) {
+    filters[type] = (filters[type] === value) ? "" : value;
+
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    if (filters[type]) btn.classList.add("active");
+
+    applyFilters();
+}
+
+function resetFilters() {
+    filters = {lang:"",platform:"",taxa:"",category:""};
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    applyFilters();
+}
+
+function applyFilters() {
+    const search = document.getElementById("search").value.toLowerCase();
+    const cards = document.querySelectorAll(".tool");
+
+    cards.forEach(card => {
+        let show = true;
+
+        if (filters.lang && !card.dataset.lang.includes(filters.lang)) show = false;
+        if (filters.platform && !card.dataset.platform.includes(filters.platform)) show = false;
+        if (filters.taxa && !card.dataset.taxa.includes(filters.taxa)) show = false;
+        if (filters.category && !card.dataset.category.includes(filters.category)) show = false;
+
+        if (search && !card.innerText.toLowerCase().includes(search)) show = false;
+
+        card.style.display = show ? "flex" : "none";
+    });
+}
+
 function toggleDark() {
-    const body = document.body;
-    const btn = document.getElementById("modeBtn");
-
-    body.classList.toggle("dark");
-
-    if (body.classList.contains("dark")) {
-        btn.textContent = "☀️ Light mode";
-        localStorage.setItem("theme", "dark");
-    } else {
-        btn.textContent = "🌙 Dark mode";
-        localStorage.setItem("theme", "light");
-    }
+    document.body.classList.toggle("dark");
 }
 
-/* restore theme */
-window.onload = function () {
-    const theme = localStorage.getItem("theme");
-    const btn = document.getElementById("modeBtn");
-
-    if (theme === "dark") {
-        document.body.classList.add("dark");
-        btn.textContent = "☀️ Light mode";
-    }
-};
-
-/* modal */
-async function openModal(app, lang) {
-    const modal = document.getElementById("modal");
-    const container = document.getElementById("modal-text");
-
-    try {
-        const res = await fetch(`tutoriels/${app}_${lang}.json`);
-        const data = await res.json();
-
-        let html = `<h3>${data.title}</h3>`;
-        data.steps.forEach(s => {
-            html += `<div class="step">• ${s}</div>`;
-        });
-
-        container.innerHTML = html;
-
-    } catch (e) {
-        container.innerHTML = "Tutoriel indisponible";
-    }
-
-    modal.style.display = "block";
-}
-
-function closeModal() {
-    document.getElementById("modal").style.display = "none";
-}
-
-window.onclick = function(e) {
-    if (e.target === document.getElementById("modal")) {
-        closeModal();
-    }
-};
 </script>
 
 </body>
