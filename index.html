@@ -28,7 +28,6 @@ body {
     color: var(--text);
 }
 
-/* layout */
 body.site {
     min-height: 100vh;
     display: flex;
@@ -61,6 +60,37 @@ input {
     cursor: pointer;
 }
 
+/* CHIPS + RESULT COUNT */
+#activeFilters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0 5px 0;
+    justify-content: center;
+}
+
+.chip {
+    background: var(--accent);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.chip span {
+    font-weight: bold;
+}
+
+#resultCount {
+    margin-top: 6px;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
 /* MAIN */
 main {
     flex: 1;
@@ -88,17 +118,10 @@ main {
     width: 90px;
     height: 90px;
     object-fit: contain;
-    flex-shrink: 0;
 }
 
-.tool h2 {
-    margin: 0 0 6px 0;
-}
-
-.tool p {
-    margin: 6px 0 10px 0;
-    line-height: 1.4;
-}
+.tool h2 { margin: 0 0 6px 0; }
+.tool p { margin: 6px 0 10px 0; }
 
 .badge {
     background: var(--badge);
@@ -109,74 +132,7 @@ main {
     cursor: pointer;
 }
 
-.button-group {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.download-btn {
-    background: var(--accent);
-    color: white;
-    padding: 10px;
-    text-decoration: none;
-    border-radius: 6px;
-}
-
-.install-btn {
-    background: #6c757d;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 6px;
-}
-
-/* FOOTER */
-.site-footer {
-    text-align: center;
-    padding: 25px 10px;
-    margin-top: auto;
-    background: var(--card);
-    color: var(--text);
-    opacity: 0.8;
-}
-
-.footer-logo {
-    width: 55px;
-    margin-bottom: 8px;
-}
-
-/* MODAL */
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 1000;
-}
-
-.modal-content {
-    background: var(--card);
-    color: var(--text);
-    width: 320px;
-    margin: 10% auto;
-    padding: 20px;
-    border-radius: 10px;
-    position: relative;
-}
-
-.close {
-    position: absolute;
-    right: 10px;
-    top: 5px;
-    cursor: pointer;
-}
-
-/* =========================
-   FILTER PANEL (NEW)
-========================= */
-
+/* FILTER PANEL */
 .filter-panel {
     position: fixed;
     top: 0;
@@ -190,22 +146,12 @@ main {
     padding: 20px;
 }
 
-.filter-panel.open {
-    right: 0;
-}
+.filter-panel.open { right: 0; }
 
 .filter-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-}
-
-.filter-header button {
-    border: none;
-    background: none;
-    font-size: 18px;
-    cursor: pointer;
 }
 
 #overlay {
@@ -231,6 +177,14 @@ main {
     border: none;
     cursor: pointer;
 }
+
+/* FOOTER */
+.site-footer {
+    text-align: center;
+    padding: 25px 10px;
+    margin-top: auto;
+    background: var(--card);
+}
 </style>
 </head>
 
@@ -241,76 +195,46 @@ main {
 
 <div class="controls">
 <input id="search" placeholder="Filtrer...">
-<button class="toggle" id="modeBtn" onclick="toggleDark()">🌙 Dark mode</button>
-<button class="toggle" id="openFilters">⚙️ Filters</button>
+<button id="modeBtn" onclick="toggleDark()">🌙 Dark mode</button>
+<button id="openFilters">⚙️ Filters</button>
 </div>
+
+<div id="activeFilters"></div>
+<div id="resultCount"></div>
 </header>
 
 <main>
 
-<!-- CARDS (inchangées) -->
 <div class="tool" data-lang="fr" data-platform="android" data-taxa="moustiques" data-category="identification">
 <img src="images/logo_moustic_reunion.png">
 <div>
 <h2>Moustic Réunion</h2>
 <span class="badge">Android</span>
 <span class="badge">FR</span>
-<span class="badge">Disponible</span>
-<p>Clé interactive dichotomique d'identification des moustiques de l'île de LA RÉUNION.</p>
-<div class="button-group">
-<a class="download-btn" href="https://raw.githubusercontent.com/fredlardeux/entomo_tools/main/files/moustic_reunion.apk" download>Télécharger APK</a>
-<button class="install-btn" onclick="openModal('moustic_reunion','fr')">📲 Installation</button>
-</div>
-</div>
-</div>
-
-<div class="tool" data-lang="fr" data-platform="android" data-taxa="moustiques" data-category="identification">
-<img src="images/logo_moustic_tahiti.png">
-<div>
-<h2>Moustic Tahiti</h2>
-<span class="badge">Android</span>
-<span class="badge">FR</span>
-<span class="badge">Disponible bientôt</span>
-<p>Clé interactive dichotomique d'identification des moustiques de TAHITI.</p>
-<div class="button-group">
-<a class="download-btn" href="#">Télécharger APK</a>
-<button class="install-btn" onclick="openModal('moustic_tahiti','fr')">📲 Installation</button>
-</div>
+<p>Clé interactive moustiques Réunion.</p>
 </div>
 </div>
 
 <div class="tool" data-lang="en" data-platform="android" data-taxa="moustiques" data-category="identification">
 <img src="images/logo_moustic_tahiti.png">
 <div>
-<h2>Moustic Tahiti <span>(en)</span></h2>
+<h2>Moustic Tahiti</h2>
 <span class="badge">Android</span>
 <span class="badge">EN</span>
-<span class="badge">Available soon</span>
-<p>Interactive dichotomous key for mosquito identification in TAHITI.</p>
-<div class="button-group">
-<a class="download-btn" href="#">Download APK</a>
-<button class="install-btn" onclick="openModal('moustic_tahiti','en')">📲 Installation</button>
-</div>
+<p>Key for mosquito identification.</p>
 </div>
 </div>
 
 </main>
 
-<footer class="site-footer">
-<img src="images/Logo-github_entomotools.png" class="footer-logo">
-<div>© 2026 - FLX - Epidemiological Entomology</div>
-</footer>
-
-<!-- FILTER PANEL -->
+<!-- PANEL -->
 <div id="filterPanel" class="filter-panel">
-
 <div class="filter-header">
 <h3>Filters</h3>
 <button id="closeFilters">✖</button>
 </div>
 
 <div class="filters">
-
 <select id="filter-lang">
 <option value="">Langue</option>
 <option value="fr">FR</option>
@@ -320,148 +244,128 @@ main {
 <select id="filter-platform">
 <option value="">Plateforme</option>
 <option value="android">Android</option>
-<option value="r">R</option>
-<option value="python">Python</option>
 </select>
 
 <select id="filter-taxa">
 <option value="">Taxa</option>
 <option value="moustiques">Moustiques</option>
-<option value="triatomes">Triatomes</option>
 </select>
 
 <select id="filter-category">
 <option value="">Catégorie</option>
 <option value="identification">Identification</option>
-<option value="statistiques">Statistiques</option>
 </select>
 
-<button id="resetFilters">❌ Reset</button>
-
+<button id="resetFilters">Reset</button>
 </div>
 </div>
 
 <div id="overlay"></div>
 
-<!-- MODAL -->
-<div id="modal" class="modal">
-<div class="modal-content">
-<span class="close" onclick="closeModal()">✖</span>
-<div id="modal-text"></div>
-</div>
-</div>
-
 <script>
-function toggleDark() {
-    const body = document.body;
-    const btn = document.getElementById("modeBtn");
-
-    body.classList.toggle("dark");
-
-    btn.textContent = body.classList.contains("dark")
-        ? "☀️ Light mode"
-        : "🌙 Dark mode";
+function toggleDark(){
+document.body.classList.toggle("dark");
 }
 
-/* modal */
-async function openModal(app, lang) {
-    const modal = document.getElementById("modal");
-    const container = document.getElementById("modal-text");
+function applyFilters(){
 
-    try {
-        const res = await fetch(`tutoriels/${app}_${lang}.json`);
-        const data = await res.json();
+const search = document.getElementById("search").value.toLowerCase();
 
-        let html = `<h3>${data.title}</h3>`;
-        data.steps.forEach(s => html += `<div class="step">• ${s}</div>`);
+const lang = document.getElementById("filter-lang").value;
+const platform = document.getElementById("filter-platform").value;
+const taxa = document.getElementById("filter-taxa").value;
+const cat = document.getElementById("filter-category").value;
 
-        container.innerHTML = html;
+let count = 0;
 
-    } catch (e) {
-        container.innerHTML = "Tutoriel indisponible";
-    }
+document.querySelectorAll(".tool").forEach(t => {
 
-    modal.style.display = "block";
+let text = t.innerText.toLowerCase();
+
+let ok = true;
+
+if(search && !text.includes(search)) ok = false;
+if(lang && t.dataset.lang !== lang) ok = false;
+if(platform && t.dataset.platform !== platform) ok = false;
+if(taxa && t.dataset.taxa !== taxa) ok = false;
+if(cat && t.dataset.category !== cat) ok = false;
+
+t.style.display = ok ? "flex" : "none";
+
+if(ok) count++;
+});
+
+updateChips(lang, platform, taxa, cat);
+document.getElementById("resultCount").innerText = count + " outil(s)";
 }
 
-function closeModal() {
-    document.getElementById("modal").style.display = "none";
+function updateChips(lang, platform, taxa, cat){
+
+const c = document.getElementById("activeFilters");
+c.innerHTML = "";
+
+function chip(label, val, id){
+if(!val) return;
+
+let d = document.createElement("div");
+d.className = "chip";
+d.innerHTML = label + " ✖";
+
+d.onclick = () => {
+document.getElementById(id).value = "";
+applyFilters();
+};
+
+c.appendChild(d);
 }
 
-/* FILTER ENGINE (UNCHANGED LOGIC) */
-function applyFilters() {
-
-    const search = document.getElementById("search").value.toLowerCase();
-
-    const langFilter = document.getElementById("filter-lang").value;
-    const platformFilter = document.getElementById("filter-platform").value;
-    const taxaFilter = document.getElementById("filter-taxa").value;
-    const categoryFilter = document.getElementById("filter-category").value;
-
-    document.querySelectorAll(".tool").forEach(tool => {
-
-        const text = tool.innerText.toLowerCase();
-
-        const lang = tool.dataset.lang || "";
-        const platform = tool.dataset.platform || "";
-        const taxa = tool.dataset.taxa || "";
-        const category = tool.dataset.category || "";
-
-        let visible = true;
-
-        if (search && !text.includes(search)) visible = false;
-        if (langFilter && lang !== langFilter) visible = false;
-        if (platformFilter && platform !== platformFilter) visible = false;
-        if (taxaFilter && taxa !== taxaFilter) visible = false;
-        if (categoryFilter && category !== categoryFilter) visible = false;
-
-        tool.style.display = visible ? "flex" : "none";
-    });
+chip("Lang: " + lang, lang, "filter-lang");
+chip("Plateforme: " + platform, platform, "filter-platform");
+chip("Taxa: " + taxa, taxa, "filter-taxa");
+chip("Cat: " + cat, cat, "filter-category");
 }
 
-/* EVENTS */
+/* events */
 document.getElementById("search").addEventListener("input", applyFilters);
 
-document.querySelectorAll(".filters select").forEach(sel => {
-    sel.addEventListener("change", applyFilters);
-});
+document.querySelectorAll("select").forEach(s =>
+s.addEventListener("change", applyFilters)
+);
 
-document.getElementById("resetFilters").addEventListener("click", () => {
-    document.getElementById("search").value = "";
-    document.querySelectorAll(".filters select").forEach(s => s.value = "");
-    applyFilters();
-});
+document.getElementById("resetFilters").onclick = () => {
+document.querySelectorAll("select").forEach(s => s.value = "");
+document.getElementById("search").value = "";
+applyFilters();
+};
 
-/* PANEL OPEN/CLOSE */
+/* panel */
 const panel = document.getElementById("filterPanel");
 const overlay = document.getElementById("overlay");
 
-document.getElementById("openFilters").addEventListener("click", () => {
-    panel.classList.add("open");
-    overlay.classList.add("show");
-});
+document.getElementById("openFilters").onclick = () => {
+panel.classList.add("open");
+overlay.classList.add("show");
+};
 
-document.getElementById("closeFilters").addEventListener("click", closePanel);
-overlay.addEventListener("click", closePanel);
+document.getElementById("closeFilters").onclick = close;
+overlay.onclick = close;
 
-function closePanel() {
-    panel.classList.remove("open");
-    overlay.classList.remove("show");
+function close(){
+panel.classList.remove("open");
+overlay.classList.remove("show");
 }
 
-/* TAGS */
-document.querySelectorAll(".badge").forEach(b => {
-    b.addEventListener("click", () => {
-        const v = b.innerText.toLowerCase();
+/* badges */
+document.querySelectorAll(".badge").forEach(b=>{
+b.onclick = () => {
+let v = b.innerText.toLowerCase();
 
-        if (v.includes("fr")) document.getElementById("filter-lang").value = "fr";
-        if (v.includes("en")) document.getElementById("filter-lang").value = "en";
-        if (v.includes("android")) document.getElementById("filter-platform").value = "android";
-        if (v.includes("moust")) document.getElementById("filter-taxa").value = "moustiques";
-        if (v.includes("ident")) document.getElementById("filter-category").value = "identification";
+if(v.includes("fr")) document.getElementById("filter-lang").value="fr";
+if(v.includes("en")) document.getElementById("filter-lang").value="en";
+if(v.includes("android")) document.getElementById("filter-platform").value="android";
 
-        applyFilters();
-    });
+applyFilters();
+};
 });
 </script>
 
