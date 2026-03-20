@@ -28,6 +28,7 @@ body {
     color: var(--text);
 }
 
+/* layout */
 body.site {
     min-height: 100vh;
     display: flex;
@@ -90,7 +91,7 @@ main {
     align-items: center;
 }
 
-/* CARDS (core conservé + enrichi) */
+/* CARDS */
 .tool {
     display: flex;
     gap: 18px;
@@ -104,7 +105,6 @@ main {
 
     border-radius: 12px;
     background: var(--card);
-
     box-shadow: 0 2px 10px rgba(0,0,0,0.06);
 }
 
@@ -114,19 +114,10 @@ main {
     object-fit: contain;
 }
 
-.tool h2 {
-    margin: 0 0 6px 0;
-}
-
-.tool p {
-    margin: 6px 0;
-    line-height: 1.4;
-}
-
+/* badges */
 .meta {
     font-size: 0.85em;
     margin-bottom: 6px;
-    opacity: 0.8;
 }
 
 .badge {
@@ -137,7 +128,7 @@ main {
     margin-right: 6px;
 }
 
-/* BUTTONS RESTORED */
+/* buttons */
 .button-group {
     display: flex;
     gap: 10px;
@@ -156,7 +147,6 @@ main {
     background: #6c757d;
     color: white;
     padding: 10px;
-    border: none;
     border-radius: 6px;
 }
 
@@ -171,12 +161,23 @@ main {
     box-shadow: -2px 0 10px rgba(0,0,0,0.2);
     padding: 20px;
     transition: 0.3s;
+    z-index: 1000;
 }
 
 #filterPanel.open {
     right: 0;
 }
 
+/* CLOSE BUTTON */
+.closeBtn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* filter buttons */
 .filter-btn {
     display: block;
     width: 100%;
@@ -186,7 +187,12 @@ main {
     border: none;
 }
 
-/* FOOTER */
+.filter-btn.active {
+    background: var(--accent);
+    color: white;
+}
+
+/* footer */
 .site-footer {
     text-align: center;
     padding: 25px 10px;
@@ -207,9 +213,12 @@ main {
 <h1>Entomological Scientific Tools</h1>
 
 <div class="controls">
+
 <input id="search" placeholder="Recherche..." oninput="applyFilters()">
-<button onclick="toggleDark()">🌙</button>
+
+<button id="themeBtn" onclick="toggleDark()">🌙 Dark</button>
 <button onclick="toggleFilters()">⚙️ Filters</button>
+
 </div>
 
 <div id="activeFilters"></div>
@@ -218,31 +227,33 @@ main {
 <!-- SIDEBAR -->
 <div id="filterPanel">
 
+<div class="closeBtn" onclick="toggleFilters()">✖</div>
+
 <h3>Filters</h3>
 
 <div class="filter-section">
 <strong>Langue</strong>
-<button class="filter-btn" onclick="setFilter('lang','fr',this)">FR</button>
-<button class="filter-btn" onclick="setFilter('lang','en',this)">EN</button>
+<button class="filter-btn" data-type="lang" onclick="setFilter('lang','fr',this)">FR</button>
+<button class="filter-btn" data-type="lang" onclick="setFilter('lang','en',this)">EN</button>
 </div>
 
 <div class="filter-section">
 <strong>Plateforme</strong>
-<button class="filter-btn" onclick="setFilter('platform','apk',this)">APK</button>
-<button class="filter-btn" onclick="setFilter('platform','r',this)">R</button>
-<button class="filter-btn" onclick="setFilter('platform','python',this)">Python</button>
+<button class="filter-btn" data-type="platform" onclick="setFilter('platform','apk',this)">APK</button>
+<button class="filter-btn" data-type="platform" onclick="setFilter('platform','r',this)">R</button>
+<button class="filter-btn" data-type="platform" onclick="setFilter('platform','python',this)">Python</button>
 </div>
 
 <div class="filter-section">
 <strong>Taxa</strong>
-<button class="filter-btn" onclick="setFilter('taxa','moustiques',this)">Moustiques</button>
-<button class="filter-btn" onclick="setFilter('taxa','triatomes',this)">Triatomes</button>
+<button class="filter-btn" data-type="taxa" onclick="setFilter('taxa','moustiques',this)">Moustiques</button>
+<button class="filter-btn" data-type="taxa" onclick="setFilter('taxa','triatomes',this)">Triatomes</button>
 </div>
 
 <div class="filter-section">
 <strong>Catégorie</strong>
-<button class="filter-btn" onclick="setFilter('category','identification',this)">Identification</button>
-<button class="filter-btn" onclick="setFilter('category','statistics',this)">Statistics</button>
+<button class="filter-btn" data-type="category" onclick="setFilter('category','identification',this)">Identification</button>
+<button class="filter-btn" data-type="category" onclick="setFilter('category','statistics',this)">Statistics</button>
 </div>
 
 <button onclick="resetFilters()">Reset</button>
@@ -251,7 +262,6 @@ main {
 
 <main>
 
-<!-- CARD 1 -->
 <div class="tool"
 data-lang="fr"
 data-platform="apk"
@@ -278,57 +288,51 @@ data-category="identification">
 </div>
 </div>
 
-<!-- CARD 2 -->
-<div class="tool"
-data-lang="en"
-data-platform="apk"
-data-taxa="moustiques"
-data-category="identification">
-
-<img src="images/logo_moustic_tahiti.png">
-
-<div>
-<h2>Moustic Tahiti</h2>
-
-<div class="meta">
-<span class="badge">APK</span>
-<span class="badge">EN</span>
-</div>
-
-<p>Identification key for mosquitoes in Tahiti.</p>
-
-<div class="button-group">
-<a class="download-btn" href="#">Download</a>
-<button class="install-btn">Install</button>
-</div>
-
-</div>
-</div>
-
 </main>
 
 <footer class="site-footer">
-    <a href="https://github.com/fredlardeux/entomo_tools">
-        <img src="images/Logo-github_entomotools.png" class="footer-logo">
-    </a>
+    <img src="images/Logo-github_entomotools.png" class="footer-logo">
     <div>© 2026 - Epidemiological Entomology</div>
 </footer>
 
 <script>
 
-let filters = {
-    lang:"",
-    platform:"",
-    taxa:"",
-    category:""
-};
+let filters = {lang:"",platform:"",taxa:"",category:""};
 
 function toggleFilters(){
     document.getElementById("filterPanel").classList.toggle("open");
 }
 
+/* DARK MODE FIX */
+function toggleDark(){
+    document.body.classList.toggle("dark");
+
+    const btn = document.getElementById("themeBtn");
+
+    if(document.body.classList.contains("dark")){
+        btn.innerHTML = "☀️ Light";
+    } else {
+        btn.innerHTML = "🌙 Dark";
+    }
+}
+
+/* FILTER FIX (single value per category) */
 function setFilter(type,value,btn){
-    filters[type] = (filters[type] === value) ? "" : value;
+
+    if(filters[type] === value){
+        filters[type] = "";
+    } else {
+        filters[type] = value;
+    }
+
+    // reset buttons ONLY for this category
+    document.querySelectorAll(`.filter-btn[data-type="${type}"]`)
+        .forEach(b => b.classList.remove("active"));
+
+    if(filters[type]){
+        btn.classList.add("active");
+    }
+
     updateChips();
     applyFilters();
 }
@@ -354,6 +358,10 @@ function updateChips(){
 
 function resetFilters(){
     filters={lang:"",platform:"",taxa:"",category:""};
+
+    document.querySelectorAll(".filter-btn")
+        .forEach(b => b.classList.remove("active"));
+
     updateChips();
     applyFilters();
 }
@@ -379,10 +387,6 @@ function applyFilters(){
 
         card.style.display=show?"flex":"none";
     });
-}
-
-function toggleDark(){
-    document.body.classList.toggle("dark");
 }
 
 </script>
