@@ -89,10 +89,7 @@ main {
     align-items: center;
 }
 
-/* =========================
-   SCIENTIFIC CARDS V2
-========================= */
-
+/* CARD */
 .tool {
     display: flex;
     gap: 18px;
@@ -104,12 +101,6 @@ main {
     border-radius: 14px;
     background: var(--card);
     box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.tool:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.10);
 }
 
 .tool > div {
@@ -125,27 +116,6 @@ main {
     object-fit: contain;
 }
 
-.tool h2 {
-    margin: 0;
-    font-size: 1.2em;
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-}
-
-.tool h2 small {
-    font-size: 0.8em;
-    opacity: 0.7;
-    font-weight: normal;
-}
-
-.tool p {
-    margin: 4px 0 0 0;
-    line-height: 1.4;
-    opacity: 0.9;
-}
-
-/* BADGES */
 .badge {
     display: inline-block;
     background: var(--badge);
@@ -155,17 +125,9 @@ main {
     margin-right: 6px;
 }
 
-.badge.status-ok {
-    background: #d4edda;
-    color: #155724;
-}
+.badge.status-ok { background: #d4edda; color: #155724; }
+.badge.status-soon { background: #fff3cd; color: #856404; }
 
-.badge.status-soon {
-    background: #fff3cd;
-    color: #856404;
-}
-
-/* BUTTONS */
 .button-group {
     display: flex;
     flex-wrap: wrap;
@@ -212,16 +174,6 @@ main {
 .filter-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-}
-
-.filters select,
-.filters button {
-    padding: 6px;
-    margin: 4px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
 }
 </style>
 </head>
@@ -243,14 +195,11 @@ main {
 
 <main>
 
-<!-- CARD 1 -->
 <div class="tool" data-lang="fr" data-platform="android" data-taxa="moustiques" data-category="identification">
-
 <img src="images/logo_moustic_reunion.png">
 
 <div>
-
-<h2>Moustic Réunion <small>(FR)</small></h2>
+<h2>Moustic Réunion</h2>
 
 <div>
 <span class="badge">Android</span>
@@ -258,74 +207,17 @@ main {
 <span class="badge status-ok">Disponible</span>
 </div>
 
-<p>Clé dichotoùmique interactive des moustiques de La Réunion.</p>
+<p>Clé dichotomique interactive des moustiques de La Réunion.</p>
 
 <div class="button-group">
 <a class="download-btn" href="https://raw.githubusercontent.com/fredlardeux/entomo_tools/main/files/moustic_reunion.apk">
 ⬇ Télécharger APK
 </a>
 
-<button class="install-btn" onclick="openModal('moustic_reunion','fr')">
+<button class="install-btn" onclick="openModal('moustic_reunion')">
 📲 Installation
 </button>
 </div>
-
-</div>
-</div>
-
-<!-- CARD 2 -->
-<div class="tool" data-lang="fr" data-platform="android" data-taxa="moustiques" data-category="identification">
-
-<img src="images/logo_moustic_tahiti.png">
-
-<div>
-
-<h2>Moustic Tahiti <small>(FR)</small></h2>
-
-<div>
-<span class="badge">Android</span>
-<span class="badge">FR</span>
-<span class="badge status-soon">Bientôt</span>
-</div>
-
-<p>Clé interactive des moustiques de Tahiti.</p>
-
-<div class="button-group">
-<a class="download-btn" href="#">Télécharger APK</a>
-
-<button class="install-btn" onclick="openModal('moustic_tahiti','fr')">
-📲 Installation
-</button>
-</div>
-
-</div>
-</div>
-
-<!-- CARD 3 -->
-<div class="tool" data-lang="en" data-platform="android" data-taxa="moustiques" data-category="identification">
-
-<img src="images/logo_moustic_tahiti.png">
-
-<div>
-
-<h2>Moustic Tahiti <small>(EN)</small></h2>
-
-<div>
-<span class="badge">Android</span>
-<span class="badge">EN</span>
-<span class="badge status-soon">Coming soon</span>
-</div>
-
-<p>Interactive dichotomous key for mosquito identification in Tahiti.</p>
-
-<div class="button-group">
-<a class="download-btn" href="#">Download APK</a>
-
-<button class="install-btn" onclick="openModal('moustic_tahiti','en')">
-📲 Installation
-</button>
-</div>
-
 </div>
 </div>
 
@@ -364,33 +256,42 @@ main {
 </div>
 </div>
 
+<!-- MODAL -->
+<div id="overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:3000;"></div>
+
+<div id="modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:20px;border-radius:10px;z-index:3001;"></div>
+
 <script>
 function toggleDark(){
 document.body.classList.toggle("dark");
 }
 
+/* MODAL FIX */
 function openModal(id){
-    document.getElementById("modal").style.display = "block";
-    document.getElementById("overlay").style.display = "block";
-    document.getElementById("modal").innerHTML =
-        "<h3>Installation</h3><p>Tool: " + id + "</p><button onclick='closeModal()'>Close</button>";
+    const modal = document.getElementById("modal");
+    const overlay = document.getElementById("overlay");
+
+    modal.style.display = "block";
+    overlay.style.display = "block";
+
+    modal.innerHTML = `
+        <h3>Installation</h3>
+        <p>${id}</p>
+        <iframe src="tutoriels/${id}.html"
+                style="width:600px;height:400px;border:none;"></iframe>
+        <button onclick="closeModal()">Fermer</button>
+    `;
 }
 
 function closeModal(){
-    document.getElementById("modal").style.display = "none";
-    document.getElementById("overlay").style.display = "none";
+document.getElementById("modal").style.display="none";
+document.getElementById("overlay").style.display="none";
 }
 
-document.getElementById("overlay").onclick = closeModal;
-
-
-
-
-    
+/* FILTER FIX */
 function applyFilters(){
 
 const search = document.getElementById("search").value.toLowerCase();
-
 const lang = document.getElementById("filter-lang").value;
 const platform = document.getElementById("filter-platform").value;
 const taxa = document.getElementById("filter-taxa").value;
@@ -401,7 +302,6 @@ let count = 0;
 document.querySelectorAll(".tool").forEach(t => {
 
 let text = t.innerText.toLowerCase();
-
 let ok = true;
 
 if(search && !text.includes(search)) ok = false;
@@ -420,32 +320,27 @@ document.getElementById("resultCount").innerText = count + " outil(s)";
 }
 
 function updateChips(lang, platform, taxa, cat){
-
 const c = document.getElementById("activeFilters");
 c.innerHTML = "";
 
-function chip(label, val, id){
+function chip(label,val,id){
 if(!val) return;
-
 let d = document.createElement("div");
-d.className = "chip";
-d.innerHTML = label + " ✖";
-
-d.onclick = () => {
-document.getElementById(id).value = "";
-applyFilters();
-};
-
+d.className="chip";
+d.innerHTML=label+" ✖";
+d.onclick=()=>{document.getElementById(id).value="";applyFilters();}
 c.appendChild(d);
 }
 
-chip("Lang: " + lang, lang, "filter-lang");
-chip("Plateforme: " + platform, platform, "filter-platform");
-chip("Taxa: " + taxa, taxa, "filter-taxa");
-chip("Cat: " + cat, cat, "filter-category");
+chip("Lang: "+lang,lang,"filter-lang");
+chip("Plat: "+platform,platform,"filter-platform");
+chip("Taxa: "+taxa,taxa,"filter-taxa");
+chip("Cat: "+cat,cat,"filter-category");
 }
 
-/* EVENTS */
+/* INIT SAFE */
+window.addEventListener("DOMContentLoaded", () => {
+
 document.getElementById("search").addEventListener("input", applyFilters);
 
 document.querySelectorAll("select").forEach(s =>
@@ -458,45 +353,18 @@ document.getElementById("search").value = "";
 applyFilters();
 };
 
-/* FILTER PANEL */
-const panel = document.getElementById("filterPanel");
+applyFilters();
+});
 
-document.getElementById("openFilters").onclick = () => {
-panel.classList.add("open");
-};
+/* PANEL */
+const panel=document.getElementById("filterPanel");
 
-document.getElementById("closeFilters").onclick = () => {
-panel.classList.remove("open");
-};
+document.getElementById("openFilters").onclick=()=>panel.classList.add("open");
+document.getElementById("closeFilters").onclick=()=>panel.classList.remove("open");
+
+document.getElementById("overlay").onclick=closeModal;
 
 </script>
 
-<!-- MODAL -->
-<div id="overlay" style="
-    display:none;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.5);
-    z-index:3000;
-"></div>
-
-<div id="modal" style="
-    display:none;
-    position:fixed;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    z-index:3001;
-    min-width:250px;
-"></div>
-
-
-    
 </body>
 </html>
