@@ -1,0 +1,44 @@
+[
+  {
+    "id": "moustic_reunion",
+    "title": "Moustic Réunion",
+    "lang": "fr",
+    "platform": "android",
+    "taxa": "moustiques",
+    "category": "identification",
+    "description": "Clé dichotomique interactive des moustiques de La Réunion.",
+    "image": "images/logo_moustic_reunion.png",
+    "github": "https://github.com/fredlardeux/entomo_tools/releases/download/v1.0/2025-05-16_moustic_Reunion.apk",
+    "zenodo": "",
+    "doi": "",
+    "tutorial": "moustic_reunion_fr.json"
+  },
+  {
+    "id": "moustic_tahiti_fr",
+    "title": "Moustic Tahiti (FR)",
+    "lang": "fr",
+    "platform": "android",
+    "taxa": "moustiques",
+    "category": "identification",
+    "description": "Clé interactive des moustiques de Tahiti.",
+    "image": "images/logo_moustic_tahiti.png",
+    "github": "",
+    "zenodo": "",
+    "doi": "",
+    "tutorial": "moustic_tahiti_fr.json"
+  },
+  {
+    "id": "moustic_tahiti_en",
+    "title": "Moustic Tahiti (EN)",
+    "lang": "en",
+    "platform": "android",
+    "taxa": "moustiques",
+    "category": "identification",
+    "description": "Interactive dichotomous key for mosquito identification in Tahiti.",
+    "image": "images/logo_moustic_tahiti.png",
+    "github": "",
+    "zenodo": "",
+    "doi": "",
+    "tutorial": "moustic_tahiti_en.json"
+  }
+]
