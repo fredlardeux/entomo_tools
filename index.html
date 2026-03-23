@@ -57,9 +57,6 @@ header {
     border-color: var(--accent);
 }
 
-
-
-
 /* CARDS */
 .tool {
     display: flex;
@@ -147,7 +144,6 @@ header {
     padding-bottom: 10px;
 }
 
-/* selects propres */
 .filter-panel select {
     width: 100%;
     padding: 8px;
@@ -156,7 +152,6 @@ header {
     background: white;
 }
 
-/* bouton */
 .filter-panel button {
     padding: 10px;
     border-radius: 8px;
@@ -165,7 +160,6 @@ header {
     color: white;
     cursor: pointer;
 }
-
 
 .filter-panel label {
     font-size: 0.8em;
@@ -181,19 +175,13 @@ header {
     border: none;
     font-size: 20px;
     cursor: pointer;
-    color: var(--text); /* clé importante */
+    color: var(--text);
     opacity: 0.7;
-    transition: 0.2s;
 }
 
 .close-btn:hover {
     opacity: 1;
 }
-
-
-
-
-
 
 /* INSTALL BUTTON */
 .install-btn {
@@ -204,13 +192,11 @@ header {
     border: none;
     cursor: pointer;
     margin-top: 10px;
-    transition: 0.2s;
 }
 
 .install-btn:hover {
     background: #495057;
 }
-
 
 #modeBtn {
     background: var(--card);
@@ -219,25 +205,14 @@ header {
     padding: 8px 12px;
     border-radius: 8px;
     cursor: pointer;
-    transition: 0.2s;
 }
 
-
-
-
-
-
-
-
 /* FOOTER */
-
-
 footer.footer {
-    background: linear-gradient(135deg, #2c3e50, #2c7be5); /* même que header */
+    background: linear-gradient(135deg, #2c3e50, #2c7be5);
     color: white;
     padding: 15px 20px;
     text-align: center;
-
     position: fixed;
     bottom: 0;
     left: 0;
@@ -247,7 +222,6 @@ footer.footer {
 .footer-link {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
     gap: 10px;
     color: white;
     text-decoration: none;
@@ -255,11 +229,7 @@ footer.footer {
 
 .footer-logo {
     height: 28px;
-    width: auto;
-    object-fit: contain;
 }
-
-
 </style>
 </head>
 
@@ -267,22 +237,14 @@ footer.footer {
 
 <header>
 <h1>Entomological Scientific Tools</h1>
-
-
 <button onclick="toggleDark()" id="modeBtn" class="header-btn">🌙 Dark mode</button>
 <button onclick="openFilters()" class="header-btn">Filters</button>
-
-
 </header>
 
 <main id="toolsContainer"></main>
 
-<!-- FILTER -->
 <div id="filterPanel" class="filter-panel">
-
 <button onclick="closeFilters()" class="close-btn">✖</button>
-
-
 
 <h3>Filters</h3>
 
@@ -303,106 +265,77 @@ footer.footer {
 
 <script>
 
-/* DARK MODE */
-function toggleDark(){
+let toolsData = [];
+let currentStats = {};
 
-document.body.classList.toggle("dark");
+async function loadData(){
+    try {
+        const [tools, stats] = await Promise.all([
+            fetch("data/tools.json").then(r => r.json()),
+            fetch("data/stats.json").then(r => r.json())
+        ]);
 
-const btn = document.getElementById("modeBtn");
+        toolsData = tools;
+        currentStats = stats;
 
-if(document.body.classList.contains("dark")){
-    btn.textContent = "☀ Light mode";
-} else {
-    btn.textContent = "🌙 Dark mode";
+        buildFilters(tools);
+        renderTools(tools, stats);
+
+    } catch (err) {
+        console.error("Erreur chargement JSON:", err);
+    }
 }
 
+/* DARK MODE */
+function toggleDark(){
+document.body.classList.toggle("dark");
+const btn = document.getElementById("modeBtn");
+btn.textContent = document.body.classList.contains("dark")
+? "☀ Light mode"
+: "🌙 Dark mode";
 }
 
 /* FILTER PANEL */
-function openFilters(){
-    document.getElementById("filterPanel").classList.add("open");
-}
-function closeFilters(){
-    document.getElementById("filterPanel").classList.remove("open");
-}
+function openFilters(){ document.getElementById("filterPanel").classList.add("open"); }
+function closeFilters(){ document.getElementById("filterPanel").classList.remove("open"); }
 
 function buildFilters(data){
-
-const fields = ["lang", "platform", "taxa", "category"];
-
-fields.forEach(field => {
-
-    const select = document.getElementById("filter-" + field);
-
-    if(!select) return;
-
-    // reset
-    select.innerHTML = `<option value="">All</option>`;
-
-    // valeurs uniques
-    const values = [...new Set(data.map(t => t[field]))];
-
-    values.forEach(v => {
-        const opt = document.createElement("option");
-        opt.value = v;
-        opt.textContent = v;
-        select.appendChild(opt);
-    });
-
+const fields = ["lang","platform","taxa","category"];
+fields.forEach(field=>{
+const select=document.getElementById("filter-"+field);
+select.innerHTML=`<option value="">All</option>`;
+[...new Set(data.map(t=>t[field]))].forEach(v=>{
+let opt=document.createElement("option");
+opt.value=v; opt.textContent=v;
+select.appendChild(opt);
+});
 });
 }
 
-
-
-
-
-
-
-/* LOAD JSON */
-let toolsData = [];
-
-fetch("data/tools.json")
-.then(res => res.json())
-.then(data => {
-    toolsData = data;
-    buildFilters(data);
-    renderTools(data);
-    document.getElementById("resetFilters").addEventListener("click", () => {
-
-    document.querySelectorAll("#filterPanel select").forEach(s => s.value = "");
-
-renderTools(toolsData);
-applyFilters();  
-});
-});
-
-
-
-
-
 /* RENDER */
-function renderTools(data){
-
+function renderTools(data, stats = {}){
 const container = document.getElementById("toolsContainer");
 container.innerHTML = "";
 
 data.forEach(t => {
 
+const st = stats[t.id] || {};
+
 const div = document.createElement("div");
 div.className = "tool";
-div.dataset.lang = t.lang;
-div.dataset.platform = t.platform;
 
 div.innerHTML = `
 <img src="${t.image}">
 <div>
 <h2>${t.title}</h2>
+
 <span class="badge" onclick="filterBy('lang','${t.lang}')">${t.lang}</span>
 <span class="badge" onclick="filterBy('platform','${t.platform}')">${t.platform}</span>
 <span class="badge" onclick="filterBy('taxa','${t.taxa}')">${t.taxa}</span>
+
 <p>${t.description}</p>
 
-<a class="download-btn" href="${t.github}" target="_blank">
+<a class="download-btn" href="${t.github_download_url}" target="_blank">
 <span>Download APK</span>
 <span>from GitHub</span>
 </a>
@@ -411,85 +344,63 @@ div.innerHTML = `
 📲 Installation
 </button>
 
+<div style="margin-top:8px; font-size:0.8em; opacity:0.8;">
+${st.github_version ? "Version: " + st.github_version : ""}
+${st.github_downloads ? "<br>Downloads: " + st.github_downloads : ""}
+${st.zenodo_doi ? `<br><a href="https://doi.org/${st.zenodo_doi}" target="_blank">DOI</a>` : ""}
+</div>
+
 </div>
 `;
 
 container.appendChild(div);
-
 });
 }
 
 /* FILTER */
 function applyFilters(){
+const lang=document.getElementById("filter-lang").value;
+const platform=document.getElementById("filter-platform").value;
+const taxa=document.getElementById("filter-taxa").value;
+const category=document.getElementById("filter-category").value;
 
-const lang = document.getElementById("filter-lang").value;
-const platform = document.getElementById("filter-platform").value;
-const taxa = document.getElementById("filter-taxa").value;
-const category = document.getElementById("filter-category").value;
+const filtered=toolsData.filter(t=>
+(!lang||t.lang===lang)
+&&(!platform||t.platform===platform)
+&&(!taxa||t.taxa===taxa)
+&&(!category||t.category===category)
+);
 
-const filtered = toolsData.filter(t => {
+renderTools(filtered,currentStats);
+}
 
-    return (!lang || t.lang === lang)
-        && (!platform || t.platform === platform)
-        && (!taxa || t.taxa === taxa)
-        && (!category || t.category === category);
+/* EVENTS */
+document.querySelectorAll("#filterPanel select")
+.forEach(s=>s.addEventListener("change",applyFilters));
 
-});
-
-renderTools(filtered);
-
+/* BADGE FILTER */
+function filterBy(key,value){
+const filtered=toolsData.filter(t=>t[key]===value);
+renderTools(filtered,currentStats);
 }
 
 /* MODAL */
 function openModal(file){
-
-fetch("tutoriels/" + file)
-.then(r => r.json())
-.then(data => {
-alert(data.steps.join("\n"));
-});
+fetch("tutoriels/"+file)
+.then(r=>r.json())
+.then(d=>alert(d.steps.join("\n")));
 }
 
-
-function filterBy(key, value){
-
-const filtered = toolsData.filter(t => t[key] === value);
-renderTools(filtered);
-
-}
-
-
-document.querySelectorAll("#filterPanel select").forEach(select => {
-    select.addEventListener("change", applyFilters);
-});
-applyFilters();
-
-
-async function loadData(){
-    const [tools, stats] = await Promise.all([
-        fetch("data/tools.json").then(r => r.json()),
-        fetch("data/stats.json").then(r => r.json())
-    ]);
-
-    render(tools, stats);
-}
-
-
-    
-
+/* INIT */
+loadData();
 
 </script>
 
 <footer class="footer">
-    
-    <a href="https://github.com/fredlardeux/entomo_tools/" target="_blank" class="footer-link">
-
-        <img src="images/Logo-github_entomotools.png" alt="GitHub EntomoTools logo" class="footer-logo">
-
-        <span>© 2026 - FLX - Epidemiological entomology</span>
-
-    </a>
-
+<a href="https://github.com/fredlardeux/entomo_tools/" target="_blank" class="footer-link">
+<img src="images/Logo-github_entomotools.png" class="footer-logo">
+<span>© 2026 - FLX - Epidemiological entomology</span>
+</a>
 </footer>
 
 </body>
