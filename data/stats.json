@@ -1,17 +1,14 @@
 {
   "moustic_reunion": {
-    "github_version": "v1.0",
-    "github_downloads": 4,
+    "github_downloads": 0,
     "zenodo_downloads": 0
   },
   "moustic_tahiti_fr": {
-    "github_version": "v1.0",
-    "github_downloads": 4,
+    "github_downloads": 0,
     "zenodo_downloads": 0
   },
   "moustic_tahiti_en": {
-    "github_version": "v1.0",
-    "github_downloads": 4,
+    "github_downloads": 0,
     "zenodo_downloads": 0
   }
 }
